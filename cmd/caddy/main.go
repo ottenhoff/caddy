@@ -33,6 +33,9 @@ import (
 
 	// plug in Caddy modules here
 	_ "github.com/caddyserver/caddy/v2/modules/standard"
+	_ "github.com/mholt/caddy-ratelimit"
+	_ "github.com/mholt/caddy-events-exec"
+	_ "github.com/caddyserver/replace-response"
 )
 
 func main() {

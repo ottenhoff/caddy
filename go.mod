@@ -12,8 +12,8 @@ require (
 	github.com/caddyserver/certmagic v0.20.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.10
-	github.com/google/cel-go v0.20.0
-	github.com/google/uuid v1.3.1
+	github.com/google/cel-go v0.15.1
+	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.17.0
 	github.com/klauspost/cpuid/v2 v2.2.5
 	github.com/mholt/acmez v1.2.0
@@ -34,7 +34,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.21.0
 	go.opentelemetry.io/otel/sdk v1.21.0
 	go.uber.org/automaxprocs v1.5.3
-	go.uber.org/zap v1.26.0
+	go.uber.org/zap v1.27.0
 	go.uber.org/zap/exp v0.2.0
 	golang.org/x/crypto v0.20.0
 	golang.org/x/exp v0.0.0-20231214170342-aacd6d4b4611
@@ -49,7 +49,8 @@ require (
 require (
 	cloud.google.com/go/iam v1.1.2 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
-	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
+	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230305170008-8188dc5388df // indirect
+	github.com/caddyserver/replace-response v0.0.0-20231221003037-a85d4ddc11d6 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.5.0 // indirect
 	github.com/golang/glog v1.1.2 // indirect
@@ -58,7 +59,10 @@ require (
 	github.com/google/go-tspi v0.3.0 // indirect
 	github.com/google/pprof v0.0.0-20231212022811-ec68065c825e // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
+	github.com/icholy/replace v0.6.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
+	github.com/mholt/caddy-events-exec v0.0.0-20231121214933-055bfd2e8b82 // indirect
+	github.com/mholt/caddy-ratelimit v0.0.0-20240306210800-3d68475a9bf0 // indirect
 	github.com/onsi/ginkgo/v2 v2.13.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
