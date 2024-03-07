@@ -15,14 +15,12 @@
 package reverseproxy
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	weakrand "math/rand"
 	"net"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync/atomic"
@@ -691,8 +689,71 @@ func (s CookieHashSelection) Select(pool UpstreamPool, req *http.Request, w http
 	cookie, err := req.Cookie(s.Name)
 	// If there's no cookie, select a host using the fallback policy
 	if err != nil || cookie == nil {
+		// Try to get backup cookies
+		sakaiCookie, sakaiErr := req.Cookie("SAKAIID")
+		jsessionCookie, jsessionErr := req.Cookie("JSESSIONID")
+
+		// If neither backup cookie is present, select a new host
+		if sakaiErr != nil && jsessionErr != nil {
+			return selectNewHost()
+		}
+
+		// If SAKAIID cookie is present, use it, otherwise use JSESSIONID
+		backupCookie := sakaiCookie
+		if sakaiErr != nil {
+			backupCookie = jsessionCookie
+		}
+
+		// Parse the suffix off the backup cookie
+		suffix := strings.Split(backupCookie.Value, ".")[1]
+
+		// Strip the suffix of any non-digits
+		re := regexp.MustCompile("[^0-9]+")
+		strippedSuffix := re.ReplaceAllString(suffix, "")
+
+		// If DEV, then use the strippedSuffix to new value mapping
+		if strings.Contains(suffix, "dev") {
+			strippedSuffix = "dev"
+		}
+
+		// Create a map for the strippedSuffix to new value mapping
+		strippedSuffixMap := map[string]string{
+			"01":  ".65.179",
+			"02":  ".67.12",
+			"03":  ".65.179",
+			"04":  ".65.47",
+			"05":  ".67.187",
+			"06":  ".64.76",
+			"07":  ".65.153",
+			"08":  ".67.126",
+			"09":  ".67.84",
+			"10":  ".65.95",
+			"101": ".14.12",
+			"102": ".24.146",
+			"103": ".15.145",
+			"dev": ".67.25",
+			// Add more mappings as needed
+		}
+
+		// Loop over the available upstreams until we find a match
+		for _, upstream := range pool {
+			if !upstream.Available() {
+				continue
+			}
+			// Get the new value from the map
+			mappedIP, ok := strippedSuffixMap[strippedSuffix]
+			if !ok {
+				// If the strippedSuffix is not in the map, continue to the next iteration
+				continue
+			}
+			// Check if upstream.Dial contains the new value
+			if strings.Contains(upstream.Dial, mappedIP) {
+				return upstream
+			}
+		}
 		return selectNewHost()
 	}
+
 	// If the cookie is present, loop over the available upstreams until we find a match
 	cookieValue := cookie.Value
 	for _, upstream := range pool {
@@ -769,12 +830,7 @@ func (s *CookieHashSelection) UnmarshalCaddyfile(d *caddyfile.Dispenser) error {
 
 // hashCookie hashes (HMAC 256) some data with the secret
 func hashCookie(secret string, data string) (string, error) {
-	h := hmac.New(sha256.New, []byte(secret))
-	_, err := h.Write([]byte(data))
-	if err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
+	return fmt.Sprintf("%x", hash(data+secret)), nil
 }
 
 // selectRandomHost returns a random available host
