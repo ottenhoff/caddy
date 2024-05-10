@@ -7,18 +7,19 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/alecthomas/chroma/v2 v2.13.0
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
-	github.com/caddyserver/certmagic v0.20.1-0.20240419174353-855d4670a49d
+	github.com/caddyserver/certmagic v0.21.0
 	github.com/caddyserver/replace-response v0.0.0-20231221003037-a85d4ddc11d6
+	github.com/caddyserver/zerossl v0.1.2
 	github.com/dunglas/caddy-cbrotli v1.0.0
 	github.com/dustin/go-humanize v1.0.1
-	github.com/go-chi/chi/v5 v5.0.11
+	github.com/go-chi/chi/v5 v5.0.12
 	github.com/google/cel-go v0.20.1
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.17.0
 	github.com/klauspost/cpuid/v2 v2.2.7
+	github.com/mholt/acmez/v2 v2.0.1
 	github.com/mholt/caddy-events-exec v0.0.0-20231121214933-055bfd2e8b82
 	github.com/mholt/caddy-ratelimit v0.0.0-20240306210800-3d68475a9bf0
-	github.com/porech/caddy-maxmind-geolocation v0.0.0-20240317120312-8794ba5a3a9f
 	github.com/prometheus/client_golang v1.19.0
 	github.com/quic-go/quic-go v0.43.1
 	github.com/smallstep/certificates v0.25.3-rc5
@@ -51,22 +52,19 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
-	github.com/caddyserver/zerossl v0.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fxamacker/cbor/v2 v2.5.0 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.1 // indirect
+	github.com/fxamacker/cbor/v2 v2.6.0 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/golang/glog v1.2.0 // indirect
-	github.com/google/brotli/go/cbrotli v0.0.0-20240116120200-adbc354d23af // indirect
+	github.com/google/brotli/go/cbrotli v0.0.0-20240509194242-04388304a6f8 // indirect
 	github.com/google/certificate-transparency-go v1.1.8-0.20240110162603-74a5dd331745 // indirect
 	github.com/google/go-tpm v0.9.0 // indirect
 	github.com/google/go-tspi v0.3.0 // indirect
 	github.com/google/pprof v0.0.0-20231212022811-ec68065c825e // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
 	github.com/icholy/replace v0.6.0 // indirect
-	github.com/mholt/acmez/v2 v2.0.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.13.2 // indirect
-	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/smallstep/go-attestation v0.4.4-0.20240109183208-413678f90935 // indirect

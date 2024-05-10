@@ -41,7 +41,6 @@ import (
 	_ "github.com/mholt/caddy-ratelimit"
 	_ "github.com/mholt/caddy-events-exec"
 	_ "github.com/caddyserver/replace-response"
-	_ "github.com/porech/caddy-maxmind-geolocation"
 	_ "github.com/dunglas/caddy-cbrotli"
 )
 
