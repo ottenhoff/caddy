@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/alecthomas/chroma/v2 v2.13.0
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
-	github.com/caddyserver/certmagic v0.20.0
+	github.com/caddyserver/certmagic v0.20.1-0.20240419174353-855d4670a49d
 	github.com/caddyserver/replace-response v0.0.0-20231221003037-a85d4ddc11d6
 	github.com/dunglas/caddy-cbrotli v1.0.0
 	github.com/dustin/go-humanize v1.0.1
@@ -15,8 +15,7 @@ require (
 	github.com/google/cel-go v0.20.1
 	github.com/google/uuid v1.6.0
 	github.com/klauspost/compress v1.17.0
-	github.com/klauspost/cpuid/v2 v2.2.5
-	github.com/mholt/acmez v1.2.0
+	github.com/klauspost/cpuid/v2 v2.2.7
 	github.com/mholt/caddy-events-exec v0.0.0-20231121214933-055bfd2e8b82
 	github.com/mholt/caddy-ratelimit v0.0.0-20240306210800-3d68475a9bf0
 	github.com/porech/caddy-maxmind-geolocation v0.0.0-20240317120312-8794ba5a3a9f
@@ -52,6 +51,7 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
+	github.com/caddyserver/zerossl v0.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.5.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.1 // indirect
@@ -64,6 +64,7 @@ require (
 	github.com/google/pprof v0.0.0-20231212022811-ec68065c825e // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
 	github.com/icholy/replace v0.6.0 // indirect
+	github.com/mholt/acmez/v2 v2.0.0 // indirect
 	github.com/onsi/ginkgo/v2 v2.13.2 // indirect
 	github.com/oschwald/maxminddb-golang v1.10.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
