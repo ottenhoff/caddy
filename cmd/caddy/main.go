@@ -28,6 +28,9 @@
 // https://github.com/caddyserver/xcaddy
 package main
 
+// mac build: CGO_LDFLAGS="-L/opt/homebrew/lib/" CGO_CFLAGS="-I/opt/homebrew/include/" CGO_ENABLED=1 caddy build
+// linux build: CGO_ENABLED=1 caddy build
+
 import (
 	caddycmd "github.com/caddyserver/caddy/v2/cmd"
 
