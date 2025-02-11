@@ -11,6 +11,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.14.0
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
 	github.com/caddyserver/certmagic v0.21.7
+	github.com/caddyserver/replace-response v0.0.0-20241211194404-3865845790a7
 	github.com/caddyserver/zerossl v0.1.3
 	github.com/dunglas/caddy-cbrotli v1.0.0
 	github.com/dustin/go-humanize v1.0.1
