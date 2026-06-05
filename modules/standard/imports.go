@@ -15,4 +15,7 @@ import (
 	_ "github.com/caddyserver/caddy/v2/modules/filestorage"
 	_ "github.com/caddyserver/caddy/v2/modules/logging"
 	_ "github.com/caddyserver/caddy/v2/modules/metrics"
+	_ "github.com/caddyserver/replace-response"
+	_ "github.com/mholt/caddy-events-exec"
+	_ "github.com/mholt/caddy-ratelimit"
 )

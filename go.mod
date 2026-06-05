@@ -10,6 +10,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.24.1
 	github.com/aryann/difflib v0.0.0-20210328193216-ff5ff6dc229b
 	github.com/caddyserver/certmagic v0.25.3
+	github.com/caddyserver/replace-response v0.0.0-20250618171559-80962887e4c6
 	github.com/caddyserver/zerossl v0.1.5
 	github.com/cloudflare/circl v1.6.3
 	github.com/dustin/go-humanize v1.0.1
@@ -19,6 +20,8 @@ require (
 	github.com/klauspost/compress v1.18.6
 	github.com/klauspost/cpuid/v2 v2.3.0
 	github.com/mholt/acmez/v3 v3.1.6
+	github.com/mholt/caddy-events-exec v0.1.0
+	github.com/mholt/caddy-ratelimit v0.1.0
 	github.com/molecule-man/go-brrr v0.5.1
 	github.com/prometheus/client_golang v1.23.2
 	github.com/quic-go/quic-go v0.59.1
@@ -73,6 +76,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.15 // indirect
 	github.com/googleapis/gax-go/v2 v2.22.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.28.0 // indirect
+	github.com/icholy/replace v0.6.0 // indirect
 	github.com/jackc/pgx/v5 v5.9.2 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
