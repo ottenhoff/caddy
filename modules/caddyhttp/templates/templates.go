@@ -29,10 +29,6 @@ import (
 	"github.com/caddyserver/caddy/v2/modules/caddyhttp"
 )
 
-func init() {
-	caddy.RegisterModule(Templates{})
-}
-
 // Templates is a middleware which executes response bodies as Go templates.
 // The syntax is documented in the Go standard library's
 // [text/template package](https://golang.org/pkg/text/template/).
