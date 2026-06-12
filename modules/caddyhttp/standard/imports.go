@@ -16,4 +16,5 @@ import (
 	_ "github.com/caddyserver/caddy/v2/modules/caddyhttp/requestbody"
 	_ "github.com/caddyserver/caddy/v2/modules/caddyhttp/reverseproxy"
 	_ "github.com/caddyserver/caddy/v2/modules/caddyhttp/rewrite"
+	_ "github.com/ottenhoff/caddy-brrr"
 )

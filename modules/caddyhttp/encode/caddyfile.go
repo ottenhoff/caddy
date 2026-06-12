@@ -40,7 +40,6 @@ func parseCaddyfile(h httpcaddyfile.Helper) (caddyhttp.MiddlewareHandler, error)
 // UnmarshalCaddyfile sets up the handler from Caddyfile tokens. Syntax:
 //
 //	encode [<matcher>] <formats...> {
-//	    br             [<level>]
 //	    gzip           [<level>]
 //	    zstd           [<level>] {
 //	        level           <level>

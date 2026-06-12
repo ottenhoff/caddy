@@ -24,10 +24,6 @@ encode {
 	gzip 5
 }
 
-encode {
-	br 5
-}
-
 encode
 ----------
 {
@@ -85,17 +81,6 @@ encode
 									"prefer": [
 										"zstd",
 										"gzip"
-									]
-								},
-								{
-									"encodings": {
-										"br": {
-											"level": 5
-										}
-									},
-									"handler": "encode",
-									"prefer": [
-										"br"
 									]
 								},
 								{
