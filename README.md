@@ -64,6 +64,7 @@
 - [Features](#features)
 - [Install](#install)
 - [Build from source](#build-from-source)
+	- [Build Longsight for Graviton](#build-longsight-for-graviton)
 	- [For development](#for-development)
 	- [With version information and/or plugins](#with-version-information-andor-plugins)
 - [Quick start](#quick-start)
@@ -106,6 +107,31 @@ See [our online documentation](https://caddyserver.com/docs/install) for other i
 Requirements:
 
 - [Go 1.26.0 or newer](https://golang.org/dl/)
+
+### Build Longsight for Graviton
+
+Check out the Longsight branch or commit you want to build. From the repository root,
+set `LONGSIGHT_VERSION` to the version label for that revision, then run:
+
+```sh
+LONGSIGHT_VERSION=v2.11.7-longsight
+
+CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build \
+  -tags=nobadger,nomysql,nopgx,notemplates \
+  -trimpath \
+  -ldflags "-s -w -X github.com/caddyserver/caddy/v2.CustomVersion=${LONGSIGHT_VERSION}" \
+  -o "caddy-${LONGSIGHT_VERSION}-linux-arm64" ./cmd/caddy
+```
+
+The command produces a statically linked Linux ARM64 binary for AWS Graviton.
+`LONGSIGHT_VERSION` sets the displayed version; the current checkout supplies the code.
+For future revisions, update the checkout and version label, and use the Go version
+required by `go.mod`.
+
+The build tags exclude the Badger, MySQL, and PostgreSQL database backends and disable
+the template handler's registration. The Longsight module imports also omit the
+`acme_server` handler. ZeroSSL and Let's Encrypt issuance, `tls internal`, and
+`file_server` remain available.
 
 ### For development
 
