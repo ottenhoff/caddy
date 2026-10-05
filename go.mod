@@ -24,7 +24,7 @@ require (
 	github.com/mholt/acmez/v3 v3.1.7
 	github.com/mholt/caddy-events-exec v0.1.0
 	github.com/mholt/caddy-ratelimit v0.1.0
-	github.com/molecule-man/go-brrr v0.5.1
+	github.com/molecule-man/go-brrr v1.2.0
 	github.com/prometheus/client_golang v1.24.1
 	github.com/quic-go/quic-go v0.63.0
 	github.com/smallstep/certificates v0.30.2

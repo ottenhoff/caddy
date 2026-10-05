@@ -17,6 +17,7 @@ package caddybrotli
 import (
 	"bytes"
 	"io"
+	"strconv"
 	"testing"
 
 	"github.com/molecule-man/go-brrr"
@@ -131,4 +132,42 @@ func TestBrotliNewEncoderRoundTrip(t *testing.T) {
 
 func levelPtr(level int) *int {
 	return &level
+}
+
+func TestBrotliEncoderReuseAndFlush(t *testing.T) {
+	for _, level := range []int{0, 1, 5, 9, 10, 11} {
+		t.Run(strconv.Itoa(level), func(t *testing.T) {
+			b := Brotli{Level: levelPtr(level)}
+			encoder := b.NewEncoder()
+			for _, original := range [][]byte{
+				bytes.Repeat([]byte("Every site on HTTPS. "), 512),
+				[]byte("A second response reuses the encoder after Close."),
+			} {
+				var compressed bytes.Buffer
+				encoder.Reset(&compressed)
+				mid := len(original) / 2
+				if _, err := encoder.Write(original[:mid]); err != nil {
+					t.Fatalf("Write() error = %v", err)
+				}
+				if err := encoder.Flush(); err != nil {
+					t.Fatalf("Flush() error = %v", err)
+				}
+				if _, err := encoder.Write(original[mid:]); err != nil {
+					t.Fatalf("Write() after Flush() error = %v", err)
+				}
+				if err := encoder.Close(); err != nil {
+					t.Fatalf("Close() error = %v", err)
+				}
+				reader := brrr.NewReader(&compressed)
+				decompressed, err := io.ReadAll(reader)
+				reader.Close()
+				if err != nil {
+					t.Fatalf("ReadAll() error = %v", err)
+				}
+				if !bytes.Equal(decompressed, original) {
+					t.Fatal("decoded response differs from the original after Flush() and encoder reuse")
+				}
+			}
+		})
+	}
 }
