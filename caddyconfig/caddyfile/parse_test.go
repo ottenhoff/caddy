@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -318,8 +319,12 @@ func TestParseOneAndImport(t *testing.T) {
 		  dir1 "{}"`, false, []string{"localhost"}, []int{2}},
 
 		// quoted braces are literal arguments: they must not open/close blocks or swallow directives
-		{"localhost {\n dir1 \"{\" `}`\n dir2 \"}\"\n dir3 \"{\"\n}",
-			false, []string{"localhost"}, []int{3, 2, 2}},
+		{
+			"localhost {\n dir1 \"{\" `}`\n dir2 \"}\"\n dir3 \"{\"\n}",
+			false,
+			[]string{"localhost"},
+			[]int{3, 2, 2},
+		},
 
 		// quoted "{" as the last argument before a real block
 		{`localhost {
@@ -421,7 +426,8 @@ func TestRecursiveImport(t *testing.T) {
 	err = os.WriteFile(recursiveFile1, []byte(
 		`localhost
 		dir1
-		import recursive_import_test2`), 0o644)
+		import recursive_import_test2`,
+	), 0o644)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -455,7 +461,8 @@ func TestRecursiveImport(t *testing.T) {
 	err = os.WriteFile(recursiveFile1, []byte(
 		`localhost
 		dir1
-		import `+recursiveFile2), 0o644)
+		import `+recursiveFile2,
+	), 0o644)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -476,6 +483,43 @@ func TestRecursiveImport(t *testing.T) {
 	}
 	if !isExpected(result) {
 		t.Error("relative+absolute import failed")
+	}
+}
+
+// TestParseImportInaccessibleFile ensures that an import path which exists
+// but cannot be accessed reports the underlying OS error instead of the
+// misleading "File to import not found" (issue #8161). A path through a
+// regular file fails stat with ENOTDIR, unlike a genuinely missing file,
+// which must keep the "not found" message. Windows reports that same path
+// as not existing instead, so the through-a-file case is skipped there;
+// the permission-denied case from the issue is unaffected.
+func TestParseImportInaccessibleFile(t *testing.T) {
+	testParseOne := func(input string) (ServerBlock, error) {
+		p := testParser(input)
+		p.Next() // parseOne doesn't call Next() to start, so we must
+		err := p.parseOne()
+		return p.block, err
+	}
+
+	if runtime.GOOS != "windows" {
+		_, err := testParseOne("import testdata/import_test1.txt/child.txt")
+		if err == nil {
+			t.Fatal("expected error importing through a regular file, got nil")
+		}
+		if strings.Contains(err.Error(), "not found") {
+			t.Errorf("expected OS error to be reported, got: %v", err)
+		}
+		if !strings.Contains(err.Error(), "child.txt") {
+			t.Errorf("expected error to name the import path, got: %v", err)
+		}
+	}
+
+	_, err := testParseOne("import testdata/not_found.txt")
+	if err == nil {
+		t.Fatal("expected error importing a missing file, got nil")
+	}
+	if !strings.Contains(err.Error(), "File to import not found") {
+		t.Errorf("expected 'File to import not found' for a missing file, got: %v", err)
 	}
 }
 
@@ -613,6 +657,69 @@ func TestParseAll(t *testing.T) {
 		:80
 		import A
 		`, true, [][]string{}},
+
+		// missing closing brace of the site block; the last directive
+		// having its own block must not mask it (issue #8374)
+		{`:8080 {
+			header {
+				X-Foo "bar"
+			}
+		`, true, [][]string{}},
+
+		// same, with the last directive's block written inline-nested
+		{`:8080 {
+			file_server {
+				browse
+			}
+		`, true, [][]string{}},
+
+		// unclosed global options block whose last directive has a block
+		{`{
+			servers {
+				protocols h1
+			}
+		`, true, [][]string{}},
+
+		// missing closing brace, last directive has no block
+		{`:8080 {
+			file_server
+		`, true, [][]string{}},
+
+		// extra closing brace after a site without braces (issue #8374)
+		{`:8080
+		file_server
+		}
+		`, true, [][]string{}},
+
+		// a closing brace must not separate two braceless sites
+		{`:8080
+		root /www/example.com
+		file_server
+		}
+
+		:3000
+		reverse_proxy localhost:9000
+		`, true, [][]string{}},
+
+		// valid controls: nested directive block as the last directive,
+		// site block closed afterwards
+		{`:8080 {
+			header {
+				X-Foo "bar"
+			}
+		}`, false, [][]string{
+			{":8080"},
+		}},
+
+		{`:8080 {
+			handle {
+				header {
+					X-Foo "bar"
+				}
+			}
+		}`, false, [][]string{
+			{":8080"},
+		}},
 	} {
 		p := testParser(test.input)
 		blocks, err := p.parseAll()
@@ -771,6 +878,46 @@ func TestImportReplacementInJSONWithBrace(t *testing.T) {
 	}
 }
 
+func TestArgsReplacerOutOfBoundsIndex(t *testing.T) {
+	for i, test := range []struct {
+		args   []string
+		input  string
+		expect string
+	}{
+		{
+			args:   []string{"a", "b"},
+			input:  "{args[1]}",
+			expect: "b",
+		},
+		{
+			args:   []string{"a", "b"},
+			input:  "{args[2]}",
+			expect: "{args[2]}",
+		},
+		{
+			args:   []string{"a", "b"},
+			input:  "{args[-1]}",
+			expect: "{args[-1]}",
+		},
+		{
+			args:   []string{"a", "b"},
+			input:  "{args.-1}",
+			expect: "{args.-1}",
+		},
+		{
+			args:   nil,
+			input:  "{args[-1]}",
+			expect: "{args[-1]}",
+		},
+	} {
+		repl := makeArgsReplacer(test.args)
+		actual := repl.ReplaceKnown(test.input, "")
+		if actual != test.expect {
+			t.Errorf("Test %d: Expected: '%s' but got '%s'", i, test.expect, actual)
+		}
+	}
+}
+
 func TestSnippets(t *testing.T) {
 	p := testParser(`
 		(common) {
@@ -836,6 +983,11 @@ func writeStringToTempFileOrDie(t *testing.T, str string) (pathToFile string) {
 	if err != nil {
 		panic(err) // get a stack trace so we know where this was called from.
 	}
+	t.Cleanup(func() {
+		if err := os.Remove(file.Name()); err != nil {
+			t.Logf("Failed to remove temp file %s: %v", file.Name(), err)
+		}
+	})
 	if _, err := file.WriteString(str); err != nil {
 		panic(err)
 	}
@@ -1069,6 +1221,21 @@ func TestImportedSnippetDefinitionRetainsBlockPlaceholder(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestResolveImportGlob(t *testing.T) {
+	dir := t.TempDir()
+	os.WriteFile(filepath.Join(dir, "a.caddy"), []byte("a\n"), 0o600)
+	os.WriteFile(filepath.Join(dir, "b.caddy"), []byte("b\n"), 0o600)
+	os.WriteFile(filepath.Join(dir, ".hidden.caddy"), []byte("h\n"), 0o600)
+	importer := filepath.Join(dir, "Caddyfile")
+	matches, _, err := resolveImportGlob(importer, "*.caddy")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(matches) != 2 { // dotfile skipped for glob
+		t.Errorf("got %d matches, want 2: %v", len(matches), matches)
 	}
 }
 
